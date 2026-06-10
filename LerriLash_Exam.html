@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Lerri Lash Exam</title>
+<style>
+body{margin:0;font-family:Arial,sans-serif;background:linear-gradient(135deg,#24160f,#5b3b23,#b88b55);color:#fff}
+.top{display:flex;justify-content:space-between;padding:15px 20px}
+.card{max-width:850px;margin:20px auto;background:rgba(255,255,255,.1);padding:25px;border-radius:20px}
+input[type=text]{width:100%;padding:12px;border-radius:10px;border:none}
+.answer{display:block;padding:12px;margin:10px 0;background:rgba(255,255,255,.08);border-radius:12px}
+button{padding:12px 20px;border:none;border-radius:12px;background:#f1cf9a;font-weight:bold;cursor:pointer}
+.progress{height:12px;background:#ffffff22;border-radius:20px;margin:15px 0}
+.bar{height:12px;width:0;background:#f1cf9a;border-radius:20px}
+</style>
+</head>
+<body>
+<div class="top">
+<h2>Lerri Lash</h2>
+<div>📷 @lerri_lashes</div>
+</div>
+
+<div class="card">
+<div id="start">
+<h1>Экзамен по наращиванию ресниц</h1>
+<input id="studentName" placeholder="Введите имя">
+<br><br>
+<button onclick="startQuiz()">Начать тест</button>
+</div>
+
+<div id="quiz" style="display:none">
+<div id="counter"></div>
+<div class="progress"><div class="bar" id="bar"></div></div>
+<h3 id="question"></h3>
+<div id="answers"></div>
+</div>
+
+<div id="result" style="display:none"></div>
+</div>
+
+<script>
+const TOKEN="ВСТАВЬ_СВОЙ_ТОКЕН";
+const CHAT_ID="508387820";
+
+const questions=[
+["Какой правильный отступ от века?",["0 мм","0,5–1 мм","2–3 мм","5 мм"],1],
+["Для чего используется праймер?",["Снятие","Подготовка ресниц","Окрашивание","Дезинфекция"],1],
+["Что делает ремувер?",["Растворяет клей","Ускоряет сцепку","Очищает пинцет","Обезжиривает"],0],
+["Что такое классика?",["1 на 1","2D","3D","5D"],0],
+["Что такое склейка?",["Слипшиеся ресницы","Изгиб","Отступ","Пинцет"],0],
+["Когда коррекция?",["1 день","1 неделя","2–4 недели","3 месяца"],2],
+["Для чего патчи?",["Изоляция нижних","Снятие","Очистка","Сушка"],0],
+["Инструмент для изоляции?",["Прямой пинцет","Щетка","Кисть","Палетка"],0],
+["Что влияет на клей?",["Влажность","Цвет глаз","Длина","Патчи"],0],
+["Какой эффект вытягивает глаз?",["Лисий","Кукольный","Натуральный","Округлый"],0],
+["Что делать при раздражении?",["Продолжать","Добавить клей","Остановить процедуру","Игнорировать"],2],
+["Что такое 2D?",["2 на 1","1 на 2","2 мм","2 ряда"],0],
+["Как хранить клей?",["На солнце","У батареи","В сухом месте","На окне"],2],
+["Что делается перед наращиванием?",["Обезжиривание","Полировка","Подстригание","Снятие"],0],
+["Что нельзя сразу после процедуры?",["Мочить ресницы","Спать","Есть","Гулять"],0],
+["Что такое натуральный эффект?",["Повторение формы роста","Максимальный объем","Очень длинные","Цветные"],0],
+["Зачем консультация?",["Выбор эффекта","Фото","Продажа","Цена"],0],
+["Что противопоказание?",["Конъюнктивит","Карие глаза","Светлые волосы","Короткие ресницы"],0],
+["Что сделать после процедуры?",["Дать рекомендации","Намочить","Подрезать","Снять"],0],
+["Что важнее всего?",["Скорость","Безопасность клиента","Длина","Клей"],1]
+];
+
+let current=0,score=0,wrong=[];
+
+const nameInput=document.getElementById("studentName");
+const startBlock=document.getElementById("start");
+const quizBlock=document.getElementById("quiz");
+const resultBlock=document.getElementById("result");
+
+function startQuiz(){
+if(!nameInput.value.trim()) return alert("Введите имя");
+startBlock.style.display="none";
+quizBlock.style.display="block";
+showQuestion();
+}
+
+function showQuestion(){
+const q=questions[current];
+document.getElementById("counter").innerText=`Вопрос ${current+1} из ${questions.length}`;
+document.getElementById("question").innerText=q[0];
+document.getElementById("bar").style.width=((current/questions.length)*100)+"%";
+
+let html="";
+q[1].forEach((a,i)=>{
+html+=`<label class="answer"><input type="radio" name="ans" value="${i}"> ${a}</label>`;
+});
+html+=`<button onclick="nextQuestion()">Далее</button>`;
+document.getElementById("answers").innerHTML=html;
+}
+
+function nextQuestion(){
+const checked=document.querySelector('input[name="ans"]:checked');
+if(!checked) return alert("Выберите ответ");
+
+const user=Number(checked.value);
+const q=questions[current];
+
+if(user===q[2]) score++;
+else wrong.push(`Вопрос ${current+1}: ответ "${q[1][user]}", правильно "${q[1][q[2]]}"`);
+
+current++;
+if(current>=questions.length) finishQuiz();
+else showQuestion();
+}
+
+async function finishQuiz(){
+quizBlock.style.display="none";
+resultBlock.style.display="block";
+
+const percent=Math.round(score/questions.length*100);
+
+resultBlock.innerHTML=`
+<h1>${score}/${questions.length}</h1>
+<h2>${percent}%</h2>
+<p>Результат отправлен преподавателю</p>`;
+
+const text=`📚 Новый экзамен
+
+👤 ${nameInput.value}
+
+🏆 Результат: ${score}/${questions.length}
+📊 ${percent}%
+
+❌ Ошибки:
+${wrong.length?wrong.join("\\n"):"Нет ошибок"}`;
+
+try{
+await fetch(`https://api.telegram.org/bot${TOKEN}/sendMessage`,{
+method:"POST",
+headers:{"Content-Type":"application/json"},
+body:JSON.stringify({chat_id:CHAT_ID,text:text})
+});
+}catch(e){}
+}
+</script>
+</body>
+</html>
