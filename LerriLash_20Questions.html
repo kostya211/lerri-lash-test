@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Lerri Lash Test</title>
+<style>
+body{margin:0;font-family:Arial,sans-serif;background:linear-gradient(135deg,#24160f,#5b3b23,#b88b55);color:#fff}
+.top{display:flex;justify-content:space-between;padding:20px}
+.card{max-width:900px;margin:20px auto;background:rgba(255,255,255,.08);padding:25px;border-radius:20px}
+input[type=text]{width:100%;padding:12px;border-radius:10px;border:none}
+.answer{display:block;margin:10px 0;padding:12px;background:rgba(255,255,255,.08);border-radius:12px}
+button{padding:12px 20px;border:none;border-radius:12px;background:#f1cf9a;font-weight:bold}
+.progress{height:12px;background:#ffffff22;border-radius:20px;margin:15px 0}
+.bar{height:12px;width:0;background:#f1cf9a;border-radius:20px}
+</style>
+</head>
+<body>
+<div class="top">
+<h2>Lerri Lash</h2>
+<a href="https://instagram.com/lerri_lashes" style="color:white">@lerri_lashes</a>
+</div>
+
+<div class="card">
+<div id="start">
+<h1>Базовый курс по ресницам</h1>
+<input id="name" placeholder="Введите имя">
+<br><br>
+<button onclick="startQuiz()">Начать тест</button>
+</div>
+
+<div id="quiz" style="display:none">
+<div id="counter"></div>
+<div class="progress"><div class="bar" id="bar"></div></div>
+<h3 id="question"></h3>
+<div id="answers"></div>
+</div>
+
+<div id="result" style="display:none"></div>
+</div>
+
+<script>
+const TOKEN="ВСТАВЬ_СВОЙ_ТОКЕН";
+const CHAT_ID="508387820";
+
+const questions=[
+["Какой изгиб считается наиболее естественным?",["A","B","C","L"],2],
+["Правильный отступ?",["0","0.5-1мм","3мм","5мм"],1],
+["Для чего праймер?",["Подготовка","Снятие","Окраска","Сушка"],0],
+["Что делает ремувер?",["Растворяет клей","Красит","Сушит","Изолирует"],0],
+["Что делать при склейке?",["Оставить","Разделить","Добавить клей","Ничего"],1],
+["Коррекция обычно через?",["1 день","1 неделя","2-4 недели","3 месяца"],2],
+["Для чего обезжириватель?",["Подготовка","Снятие","Покраска","Сушка"],0],
+["Что нельзя сразу после процедуры?",["Мочить","Спать","Есть","Гулять"],0],
+["Инструмент для изоляции?",["Щетка","Прямой пинцет","Кисть","Палетка"],1],
+["На что влияет влажность?",["Клей","Патчи","Изгиб","Цвет"],0],
+["Какой эффект вытягивает глаз?",["Лисий","Кукольный","Натуральный","Лучики"],0],
+["При раздражении глаза?",["Игнорировать","Остановить работу","Добавить клей","Продолжать"],1],
+["Что такое классика?",["1 к 1","2D","3D","5D"],0],
+["Что такое 2D?",["2 на 1","1 на 2","2мм","2 ряда"],0],
+["Как хранить клей?",["Солнце","Батарея","Сухое место","Окно"],2],
+["Для чего патчи?",["Изоляция нижних","Снятие","Укладка","Полировка"],0],
+["Что такое склейка?",["Слипшиеся ресницы","Изгиб","Эффект","Материал"],0],
+["Важно в общении?",["Спорить","Навязывать","Уточнять пожелания","Игнорировать"],2],
+["Противопоказание?",["Конъюнктивит","Карие глаза","Блонд","Короткие ресницы"],0],
+["После процедуры?",["Дать рекомендации","Намочить","Подрезать","Снять"],0]
+];
+
+let current=0,score=0,wrong=[];
+
+function startQuiz(){
+if(!name.value.trim()) return alert("Введите имя");
+start.style.display="none";
+quiz.style.display="block";
+showQ();
+}
+
+function showQ(){
+let q=questions[current];
+counter.innerText=`Вопрос ${current+1} из ${questions.length}`;
+question.innerText=q[0];
+bar.style.width=((current/questions.length)*100)+"%";
+let h="";
+q[1].forEach((a,i)=>{
+h+=`<label class="answer"><input type="radio" name="a" value="${i}"> ${a}</label>`;
+});
+h+=`<button onclick="nextQ()">Далее</button>`;
+answers.innerHTML=h;
+}
+
+function nextQ(){
+let c=document.querySelector('input[name="a"]:checked');
+if(!c) return alert("Выберите ответ");
+let u=+c.value,q=questions[current];
+if(u===q[2]) score++;
+else wrong.push(`Вопрос ${current+1}: ответ "${q[1][u]}", правильно "${q[1][q[2]]}"`);
+current++;
+current>=questions.length?finishQuiz():showQ();
+}
+
+async function finishQuiz(){
+quiz.style.display="none";
+result.style.display="block";
+let percent=Math.round(score/questions.length*100);
+result.innerHTML=`<h1>${score}/${questions.length}</h1><h2>${percent}%</h2><p>Результат отправлен преподавателю</p>`;
+
+let txt=`📚 Новый тест\n👤 ${name.value}\n🏆 ${score}/${questions.length}\n\n${wrong.join("\n")||"Без ошибок"}`;
+
+try{
+await fetch(`https://api.telegram.org/bot${TOKEN}/sendMessage`,{
+method:"POST",
+headers:{"Content-Type":"application/json"},
+body:JSON.stringify({chat_id:CHAT_ID,text:txt})
+});
+}catch(e){}
+}
+</script>
+</body>
+</html>
