@@ -12,7 +12,17 @@ input[type=text]{width:100%;padding:12px;border-radius:10px;border:none}
 .answer{display:block;padding:12px;margin:10px 0;background:rgba(255,255,255,.08);border-radius:12px}
 button{padding:12px 20px;border:none;border-radius:12px;background:#f1cf9a;font-weight:bold;cursor:pointer}
 .progress{height:12px;background:#ffffff22;border-radius:20px;margin:15px 0}
-.bar{height:12px;width:0;background:#f1cf9a;border-radius:20px}
+.bar{height:12px;width:0;background:#f1cf9a;border-radius:select{
+
+width:100%;
+
+padding:12px;
+
+border-radius:10px;
+
+margin-bottom:10px;
+
+} 
 </style>
 </head>
 <body>
@@ -32,6 +42,191 @@ button{padding:12px 20px;border:none;border-radius:12px;background:#f1cf9a;font-
 <div id="quiz" style="display:none">
 <div id="counter"></div>
 <div id="questionImage"></div>
+  <div id="curlBlock" style="display:none">
+
+<img src="BB7F3A19-0F4A-4F5E-B93A-4AB875B09A98.png"
+
+style="width:100%;border-radius:15px;margin-bottom:15px;">
+
+<p>1. Выберите изгиб</p>
+
+<select id="curl1">
+
+<option>D</option>
+
+<option>Cc</option>
+
+<option>L</option>
+
+<option>B</option>
+
+<option>M</option>
+
+<option>L+</option>
+
+<option>C</option>
+
+<option>J</option>
+
+</select>
+
+<p>2. Выберите изгиб</p>
+
+<select id="curl2">
+
+<option>D</option>
+
+<option>Cc</option>
+
+<option>L</option>
+
+<option>B</option>
+
+<option>M</option>
+
+<option>L+</option>
+
+<option>C</option>
+
+<option>J</option>
+
+</select>
+
+<p>3. Выберите изгиб</p>
+
+<select id="curl3">
+
+<option>D</option>
+
+<option>Cc</option>
+
+<option>L</option>
+
+<option>B</option>
+
+<option>M</option>
+
+<option>L+</option>
+
+<option>C</option>
+
+<option>J</option>
+
+</select>
+
+<p>4. Выберите изгиб</p>
+
+<select id="curl4">
+
+<option>D</option>
+
+<option>Cc</option>
+
+<option>L</option>
+
+<option>B</option>
+
+<option>M</option>
+
+<option>L+</option>
+
+<option>C</option>
+
+<option>J</option>
+
+</select>
+
+<p>5. Выберите изгиб</p>
+
+<select id="curl5">
+
+<option>D</option>
+
+<option>Cc</option>
+
+<option>L</option>
+
+<option>B</option>
+
+<option>M</option>
+
+<option>L+</option>
+
+<option>C</option>
+
+<option>J</option>
+
+</select>
+
+<p>6. Выберите изгиб</p>
+
+<select id="curl6">
+
+<option>D</option>
+
+<option>Cc</option>
+
+<option>L</option>
+
+<option>B</option>
+
+<option>M</option>
+
+<option>L+</option>
+
+<option>C</option>
+
+<option>J</option>
+
+</select>
+
+<p>7. Выберите изгиб</p>
+
+<select id="curl7">
+
+<option>D</option>
+
+<option>Cc</option>
+
+<option>L</option>
+
+<option>B</option>
+
+<option>M</option>
+
+<option>L+</option>
+
+<option>C</option>
+
+<option>J</option>
+
+</select>
+
+<p>8. Выберите изгиб</p>
+
+<select id="curl8">
+
+<option>D</option>
+
+<option>Cc</option>
+
+<option>L</option>
+
+<option>B</option>
+
+<option>M</option>
+
+<option>L+</option>
+
+<option>C</option>
+
+<option>J</option>
+
+</select>
+
+<button onclick="checkCurls()">Далее</button>
+
+</div>
 <div class="progress"><div class="bar" id="bar"></div></div>
 <h3 id="question"></h3>
 <div id="answers"></div>
@@ -45,7 +240,7 @@ const TOKEN="8926622681:AAEWkNfUYYWIU2M_Nlh_zg2JHhsTn_j5FWI";
 const CHAT_ID="508387820";
 
 const questions=[
-["Какой правильный отступ от века?",["0 мм","0,5–1 мм","2–3 мм","5 мм"],1],
+
 ["Для чего используется праймер?",["Снятие","Подготовка ресниц","Окрашивание","Дезинфекция"],1],
 ["Что делает ремувер?",["Растворяет клей","Ускоряет сцепку","Очищает пинцет","Обезжиривает"],0],
 ["Что такое классика?",["1 на 1","2D","3D","5D"],0],
@@ -67,7 +262,9 @@ const questions=[
 ["Что важнее всего?",["Скорость","Безопасность клиента","Длина","Клей"],1]
 ];
 
-let current=0,score=0,wrong=[];
+let current=-1,score=0,wrong=[];
+
+let curlScore=0;
 
 const nameInput=document.getElementById("studentName");
 const startBlock=document.getElementById("start");
@@ -75,12 +272,89 @@ const quizBlock=document.getElementById("quiz");
 const resultBlock=document.getElementById("result");
 
 function startQuiz(){
-if(!nameInput.value.trim()) return alert("Введите имя");
+
+if(!nameInput.value.trim())
+
+return alert("Введите имя");
+
 startBlock.style.display="none";
+
 quizBlock.style.display="block";
-showQuestion();
+
+document.getElementById("curlBlock").style.display="block";
+
+document.getElementById("counter").innerText=
+
+"Блок 1 из 2 — Изгибы";
+
+document.getElementById("question").innerText=
+
+"Определите изгибы на изображении";
+
+document.getElementById("answers").innerHTML="";
+
+document.getElementById("bar").style.width="0%";
+
+}
+function checkCurls(){
+
+const correct = ["D","Cc","L","B","M","L+","C","J"];
+
+let userAnswers = [
+
+document.getElementById("curl1").value,
+
+document.getElementById("curl2").value,
+
+document.getElementById("curl3").value,
+
+document.getElementById("curl4").value,
+
+document.getElementById("curl5").value,
+
+document.getElementById("curl6").value,
+
+document.getElementById("curl7").value,
+
+document.getElementById("curl8").value
+
+];
+
+for(let i=0;i<8;i++){
+
+if(userAnswers[i]===correct[i]){
+
+score++;
+
+curlScore++;
+
+}else{
+
+wrong.push(`
+
+❌ Изгиб ${i+1}
+
+Ответ ученицы:
+
+${userAnswers[i]}
+
+Правильный ответ:
+
+${correct[i]}
+
+`);
+
 }
 
+}
+
+document.getElementById("curlBlock").style.display="none";
+
+current=0;
+
+showQuestion();
+
+}
 function showQuestion(){
 const q=questions[current];
 document.getElementById("counter").innerText=`Вопрос ${current+1} из ${questions.length}`;
