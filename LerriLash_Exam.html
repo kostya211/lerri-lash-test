@@ -128,7 +128,7 @@ const text=`📚 Новый экзамен
 📊 ${percent}%
 
 ❌ Ошибки:
-${wrong.length?wrong.join("\\n"):"Нет ошибок"}`;
+${wrong.length ? wrong.join("\n") : "Нет ошибок"}
 
 try{
 await fetch(`https://api.telegram.org/bot${TOKEN}/sendMessage`,{
