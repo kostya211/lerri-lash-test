@@ -31,6 +31,7 @@ button{padding:12px 20px;border:none;border-radius:12px;background:#f1cf9a;font-
 
 <div id="quiz" style="display:none">
 <div id="counter"></div>
+<div id="questionImage"></div>
 <div class="progress"><div class="bar" id="bar"></div></div>
 <h3 id="question"></h3>
 <div id="answers"></div>
@@ -84,6 +85,17 @@ function showQuestion(){
 const q=questions[current];
 document.getElementById("counter").innerText=`Вопрос ${current+1} из ${questions.length}`;
 document.getElementById("question").innerText=q[0];
+if(current===0){
+
+document.getElementById("questionImage").innerHTML=
+
+'<img src="BB7F3A19-0F4A-4F5E-B93A-4AB875B09A98.png" style="width:100%;border-radius:15px;margin-bottom:15px;">';
+
+}else{
+
+document.getElementById("questionImage").innerHTML="";
+
+}  
 document.getElementById("bar").style.width=((current/questions.length)*100)+"%";
 
 let html="";
