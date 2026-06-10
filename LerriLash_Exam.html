@@ -102,7 +102,19 @@ const user=Number(checked.value);
 const q=questions[current];
 
 if(user===q[2]) score++;
-else wrong.push(`Вопрос ${current+1}: ответ "${q[1][user]}", правильно "${q[1][q[2]]}"`);
+else wrong.push(`
+
+❌ Вопрос ${current+1}
+
+Ответ ученицы:
+
+${q[1][user]}
+
+Правильный ответ:
+
+${q[1][q[2]]}
+
+`);
 
 current++;
 if(current>=questions.length) finishQuiz();
