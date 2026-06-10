@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Базовый курс по ресницам</title>
+<style>
+body{font-family:Arial,sans-serif;max-width:700px;margin:30px auto;padding:20px}
+input,textarea{width:100%;padding:10px;margin-top:5px;margin-bottom:20px;box-sizing:border-box}
+button{padding:12px 25px;font-size:16px;cursor:pointer}
+#status{margin-top:15px;font-weight:bold}
+</style>
+</head>
+<body>
+
+<h1>Базовый курс по наращиванию ресниц</h1>
+
+<form id="quizForm">
+<label>Как вас зовут?</label>
+<input type="text" id="name" required>
+
+<label>Как правильно использовать ремувер?</label>
+<textarea id="remover" rows="5" required></textarea>
+
+<label>Как правильно общаться с клиентами?</label>
+<textarea id="clients" rows="5" required></textarea>
+
+<button type="submit">Отправить ответы</button>
+</form>
+
+<div id="status"></div>
+
+<script>
+const TOKEN = "8926622681:AAF4PloUM2WgIWVAYQlaQuc-LtOAqNYqP1I";
+const CHAT_ID = "508387820";
+
+document.getElementById("quizForm").addEventListener("submit", async (e) => {
+e.preventDefault();
+
+const name = document.getElementById("name").value;
+const remover = document.getElementById("remover").value;
+const clients = document.getElementById("clients").value;
+
+const message = `📚 Новый тест
+
+👤 Имя: ${name}
+
+❓ Ремувер:
+${remover}
+
+💬 Общение с клиентами:
+${clients}`;
+
+try {
+const response = await fetch(
+`https://api.telegram.org/bot${TOKEN}/sendMessage`,
+{
+method: "POST",
+headers: {"Content-Type":"application/json"},
+body: JSON.stringify({
+chat_id: CHAT_ID,
+text: message
+})
+}
+);
+
+const data = await response.json();
+
+if(data.ok){
+document.getElementById("status").innerHTML = "✅ Ответы успешно отправлены!";
+} else {
+document.getElementById("status").innerHTML = "❌ Ошибка Telegram: " + data.description;
+}
+
+} catch(err){
+document.getElementById("status").innerHTML = "❌ Ошибка отправки: " + err.message;
+}
+});
+</script>
+
+</body>
+</html>
