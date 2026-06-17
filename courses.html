@@ -393,9 +393,25 @@ border:1px solid #ccc;
 </div>
 
 </div>
+</div>
+
+</div>
+
+<script>
+
 const TOKEN="8926622681:AAEWkNfUYYWIU2M_Nlh_zg2JHhsTn_j5FWI";
 
 const CHAT_ID="508387820";
+
+let selectedCourse="";
+
+function openForm(course){
+
+selectedCourse=course;
+
+document.getElementById("formPopup").style.display="flex";
+
+}
 
 async function sendApplication(){
 
@@ -412,6 +428,44 @@ alert("Заповніть всі поля");
 return;
 
 }
+
+const text=`📚 Нова заявка на навчання
+
+Курс: ${selectedCourse}
+
+👤 Ім'я:
+
+${name}
+
+📸 Instagram:
+
+${instagram}
+
+📱 Телефон:
+
+${phone}`;
+
+await fetch(`https://api.telegram.org/bot${TOKEN}/sendMessage`,{
+
+method:"POST",
+
+headers:{"Content-Type":"application/json"},
+
+body:JSON.stringify({
+
+chat_id:CHAT_ID,
+
+text:text
+
+})
+
+});
+
+alert("Заявку успішно відправлено!");
+
+}
+
+</script>
 
 const text=`📚 Нова заявка на навчання
 
