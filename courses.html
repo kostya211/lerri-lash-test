@@ -384,7 +384,7 @@ border:1px solid #ccc;
 
 <input id="phone" placeholder="Номер телефону">
 
-<button>
+<button onclick="sendApplication()">
 
 Відправити заявку
 
@@ -393,8 +393,81 @@ border:1px solid #ccc;
 </div>
 
 </div>
+const TOKEN="8926622681:AAEWkNfUYYWIU2M_Nlh_zg2JHhsTn_j5FWI";
 
-<script>
+const CHAT_ID="508387820";
+
+async function sendApplication(){
+
+const name=document.getElementById("name").value;
+
+const instagram=document.getElementById("instagram").value;
+
+const phone=document.getElementById("phone").value;
+
+if(!name || !instagram || !phone){
+
+alert("Заповніть всі поля");
+
+return;
+
+}
+
+const text=`📚 Нова заявка на навчання
+
+Курс: ${selectedCourse}
+
+👤 Ім'я:
+
+${name}
+
+📸 Instagram:
+
+${instagram}
+
+📱 Телефон:
+
+${phone}`;
+
+try{
+
+await fetch(`https://api.telegram.org/bot${TOKEN}/sendMessage`,{
+
+method:"POST",
+
+headers:{
+
+"Content-Type":"application/json"
+
+},
+
+body:JSON.stringify({
+
+chat_id:CHAT_ID,
+
+text:text
+
+})
+
+});
+
+alert("Заявку успішно відправлено!");
+
+document.getElementById("formPopup").style.display="none";
+
+document.getElementById("name").value="";
+
+document.getElementById("instagram").value="";
+
+document.getElementById("phone").value="";
+
+}catch(e){
+
+alert("Помилка відправки");
+
+}
+
+}<script>
 
 let selectedCourse="";
 
