@@ -479,59 +479,7 @@ alert("✅ Заявку успішно відправлено!\n\nЯ зв'яжу
 
 </script>
 
-const text=`📚 Нова заявка на навчання
 
-Курс: ${selectedCourse}
-
-👤 Ім'я:
-
-${name}
-
-📸 Instagram:
-
-${instagram}
-
-📱 Телефон:
-
-${phone}`;
-
-try{
-
-await fetch(`https://api.telegram.org/bot${TOKEN}/sendMessage`,{
-
-method:"POST",
-
-headers:{
-
-"Content-Type":"application/json"
-
-},
-
-body:JSON.stringify({
-
-chat_id:CHAT_ID,
-
-text:text
-
-})
-
-});
-
-alert("Заявку успішно відправлено!");
-
-document.getElementById("formPopup").style.display="none";
-
-document.getElementById("name").value="";
-
-document.getElementById("instagram").value="";
-
-document.getElementById("phone").value="";
-
-}catch(e){
-
-alert("Помилка відправки");
-
-}
 
 }<script>
 
