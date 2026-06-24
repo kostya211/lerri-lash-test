@@ -201,21 +201,7 @@ showQuestion();
 }
 
 }
-const checked=document.querySelector('input[name="ans"]:checked');
-if(!checked){
-alert("Оберіть відповідь");
-return;
-}
-if(Number(checked.value)===questions[current][2]){
-score++;
-}
-current++;
-if(current>=questions.length){
-finishQuiz();
-}else{
-showQuestion();
-}
-}
+
 async function finishQuiz(){
 document.getElementById("quiz").style.display="none";
 const percent=Math.round(score/questions.length*100);
