@@ -124,6 +124,7 @@ const questions=[
 ];
 let current=0;
 let score=0;
+let mistakes=[]; 
 function startQuiz(){
 const name=document.getElementById("studentName").value.trim();
 if(!name){
@@ -154,6 +155,52 @@ html+=`<button onclick="nextQuestion()">Далі</button>`;
 document.getElementById("answers").innerHTML=html;
 }
 function nextQuestion(){
+
+const checked=document.querySelector('input[name="ans"]:checked');
+
+if(!checked){
+
+alert("Оберіть відповідь");
+
+return;
+
+}
+
+const userAnswer=Number(checked.value);
+
+const correctAnswer=questions[current][2];
+
+if(userAnswer===correctAnswer){
+
+score++;
+
+}else{
+
+mistakes.push({
+
+question: questions[current][0],
+
+user: questions[current][1][userAnswer],
+
+correct: questions[current][1][correctAnswer]
+
+});
+
+}
+
+current++;
+
+if(current>=questions.length){
+
+finishQuiz();
+
+}else{
+
+showQuestion();
+
+}
+
+}
 const checked=document.querySelector('input[name="ans"]:checked');
 if(!checked){
 alert("Оберіть відповідь");
@@ -183,13 +230,45 @@ passed
 `❌ <h2>Тест не складено</h2>
 <h3>${score}/10 (${percent}%)</h3>
 <p>Необхідно мінімум 8 правильних відповідей</p>`;
-const text=
+let text=
+
 `📚 Тест №1. Основи професії Lashmaker
+
 👤 Учениця: ${document.getElementById("studentName").value}
+
 🏆 Результат: ${score}/10
+
 📊 ${percent}%
-${passed ? "✅ Тест складено" : "❌ Тест НЕ складено"}`;
-try{
+
+${passed ? "✅ Тест складено" : "❌ Тест НЕ складено"}
+
+`;
+
+if(mistakes.length){
+
+text += "\n\n❌ Помилки:\n\n";
+
+mistakes.forEach((m,index)=>{
+
+text +=
+
+`${index+1}️⃣ ${m.question}
+
+❌ Відповідь учениці:
+
+${m.user}
+
+✅ Правильна відповідь:
+
+${m.correct}
+
+━━━━━━━━━━━━━━
+
+`;
+
+});
+
+}
 await fetch(`https://api.telegram.org/bot${TOKEN}/sendMessage`,{
 method:"POST",
 headers:{
