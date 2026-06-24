@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Тест №1 - Основи професії Lashmaker</title>
+<style>
+body{
+margin:0;
+font-family:Arial,sans-serif;
+background:
+linear-gradient(rgba(0,0,0,.6),rgba(0,0,0,.6)),
+url('IMG_9043.jpeg');
+background-size:cover;
+background-position:center;
+background-attachment:fixed;
+color:white;
+}
+.container{
+max-width:800px;
+margin:auto;
+padding:20px;
+}
+.card{
+background:rgba(255,255,255,.12);
+backdrop-filter:blur(10px);
+border-radius:25px;
+padding:25px;
+margin-top:30px;
+}
+h1,h2,h3{
+text-align:center;
+}
+input{
+width:100%;
+padding:14px;
+border:none;
+border-radius:12px;
+font-size:16px;
+box-sizing:border-box;
+}
+button{
+width:100%;
+padding:15px;
+border:none;
+border-radius:14px;
+background:#e7c998;
+font-size:18px;
+font-weight:bold;
+cursor:pointer;
+margin-top:15px;
+}
+.answer{
+display:block;
+padding:12px;
+margin:10px 0;
+background:rgba(255,255,255,.08);
+border-radius:12px;
+cursor:pointer;
+}
+.progress{
+height:12px;
+background:rgba(255,255,255,.15);
+border-radius:20px;
+overflow:hidden;
+margin-bottom:20px;
+}
+.bar{
+height:100%;
+width:0%;
+background:#e7c998;
+}
+.result{
+text-align:center;
+font-size:22px;
+}
+</style>
+</head>
+<body>
+<div class="container">
+<div class="card" id="start">
+<h1>Lerri Lash Academy</h1>
+<h2>📚 Тест №1</h2>
+<h3>Основи професії Lashmaker</h3>
+<input id="studentName" placeholder="Введіть ім'я та прізвище">
+
+Почати тест
+
+</div>
+<div class="card" id="quiz" style="display:none">
+<div class="progress">
+<div class="bar" id="bar"></div>
+</div>
+<div id="counter"></div>
+<h3 id="question"></h3>
+<div id="answers"></div>
+</div>
+<div class="card result" id="result" style="display:none"></div>
+</div>
+<script>
+const TOKEN="8926622681:AAEWkNfUYYWIU2M_Nlh_zg2JHhsTn_j5FWI";
+const CHAT_ID="-5426518108";
+const questions=[
+["Скільки фаз росту проходить натуральна вія?",
+["2","3","4","5"],1],
+["Як називається фаза активного росту натуральної вії?",
+["Телоген","Катаген","Анаген","Регенерація"],2],
+["У якій фазі натуральна вія перебуває у стані спокою та випадає?",
+["Анаген","Катаген","Телоген"],2],
+["За якими основними параметрами класифікуються штучні вії?",
+["Колір, довжина, форма","Довжина, товщина, вигин","Довжина, колір, товщина","Товщина, бренд, колір"],1],
+["Які довжини вій найчастіше використовуються в роботі lash-майстра?",
+["4–6 мм","7–12 мм","13–15 мм","16–20 мм"],1],
+["Яка товщина вій найчастіше використовується для об'ємного нарощування?",
+["0,03 мм","0,05 мм","0,07 мм","0,15 мм"],2],
+["Який інструмент є основним у роботі lash-майстра?",
+["Щіточка","Патчі","Пінцет","Мікробраш"],2],
+["Скільки часу зазвичай займає повне оновлення натуральних вій?",
+["1–2 тижні","2–4 тижні","4–8 тижнів","3–6 місяців"],2],
+["Чому важливо правильно підбирати довжину, товщину та вигин штучних вій?",
+["Лише зовнішній вигляд","Комфорт клієнта, носка та результат","Для фото","Для швидкості роботи"],1],
+["Чому важливо правильно організувати робоче місце?",
+["Для економії матеріалів","Для комфортної роботи майстра і клієнта","Для реклами","Для документів"],1]
+];
+let current=0;
+let score=0;
+function startQuiz(){
+const name=document.getElementById("studentName").value.trim();
+if(!name){
+alert("Введіть ім'я та прізвище");
+return;
+}
+document.getElementById("start").style.display="none";
+document.getElementById("quiz").style.display="block";
+showQuestion();
+}
+function showQuestion(){
+const q=questions[current];
+document.getElementById("counter").innerHTML=
+`Питання ${current+1} із ${questions.length}`;
+document.getElementById("question").innerHTML=q[0];
+document.getElementById("bar").style.width=
+((current/questions.length)*100)+"%";
+let html="";
+q[1].forEach((a,i)=>{
+html+=`
+<label class="answer">
+<input type="radio" name="ans" value="${i}">
+${a}
+</label>
+`;
+});
+html+=`<button onclick="nextQuestion()">Далі</button>`;
+document.getElementById("answers").innerHTML=html;
+}
+function nextQuestion(){
+const checked=document.querySelector('input[name="ans"]:checked');
+if(!checked){
+alert("Оберіть відповідь");
+return;
+}
+if(Number(checked.value)===questions[current][2]){
+score++;
+}
+current++;
+if(current>=questions.length){
+finishQuiz();
+}else{
+showQuestion();
+}
+}
+async function finishQuiz(){
+document.getElementById("quiz").style.display="none";
+const percent=Math.round(score/questions.length*100);
+const passed=score>=8;
+document.getElementById("result").style.display="block";
+document.getElementById("result").innerHTML=
+passed
+?
+`🎉 <h2>Тест успішно складено</h2>
+<h3>${score}/10 (${percent}%)</h3>`
+:
+`❌ <h2>Тест не складено</h2>
+<h3>${score}/10 (${percent}%)</h3>
+<p>Необхідно мінімум 8 правильних відповідей</p>`;
+const text=
+`📚 Тест №1. Основи професії Lashmaker
+👤 Учениця: ${document.getElementById("studentName").value}
+🏆 Результат: ${score}/10
+📊 ${percent}%
+${passed ? "✅ Тест складено" : "❌ Тест НЕ складено"}`;
+try{
+await fetch(`https://api.telegram.org/bot${TOKEN}/sendMessage`,{
+method:"POST",
+headers:{
+"Content-Type":"application/json"
+},
+body:JSON.stringify({
+chat_id:CHAT_ID,
+text:text
+})
+});
+}catch(e){}
+}
+</script>
+</body>
+</html>
